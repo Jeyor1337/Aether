@@ -185,11 +185,4 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 本软件按"原样"提供，不提供任何明示或暗示的保证。作者不对因使用本软件造成的任何损害承担责任。使用者需确保遵守所在地区的法律法规。
 
-## 联系方式
-
-- Issues: [GitHub Issues](https://github.com/yourusername/obfuscator/issues)
-- Email: your.email@example.com
-
----
-
 **警告**: 代码混淆不能替代加密和其他安全措施，仅作为额外的防护层。
