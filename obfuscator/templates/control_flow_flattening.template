@@ -1,0 +1,252 @@
+// 控制流平坦化模板
+// 将结构化控制流转换为基于switch的分发器
+
+// 模板1: 基础switch分发器
+{
+    "name": "basic_switch_dispatcher",
+    "description": "将顺序代码块转换为switch case结构",
+    "example": {
+        "original": [
+            "statement1();",
+            "statement2();",
+            "statement3();"
+        ],
+        "obfuscated": [
+            "int state = {random_start};",
+            "while (state != {end_state}) {",
+            "    switch (state) {",
+            "        case {state1}:",
+            "            statement1();",
+            "            state = {state2};",
+            "            break;",
+            "        case {state2}:",
+            "            statement2();",
+            "            state = {state3};",
+            "            break;",
+            "        case {state3}:",
+            "            statement3();",
+            "            state = {end_state};",
+            "            break;",
+            "    }",
+            "}"
+        ]
+    }
+}
+
+// 模板2: 带有虚假分支的分发器
+{
+    "name": "fake_branch_dispatcher",
+    "description": "在switch中添加永不执行的虚假case",
+    "example": {
+        "code": [
+            "int state = {start};",
+            "while (true) {",
+            "    switch (state) {",
+            "        case {real_state1}:",
+            "            real_code1();",
+            "            state = {real_state2};",
+            "            break;",
+            "        case {fake_state1}:",  // 永不到达
+            "            fake_code1();",
+            "            state = {fake_state2};",
+            "            break;",
+            "        case {real_state2}:",
+            "            real_code2();",
+            "            return;",
+            "        case {fake_state2}:",  // 永不到达
+            "            fake_code2();",
+            "            break;",
+            "    }",
+            "}"
+        ]
+    }
+}
+
+// 模板3: if-else转换为switch
+{
+    "name": "if_to_switch",
+    "original": {
+        "code": [
+            "if (condition) {",
+            "    true_branch();",
+            "} else {",
+            "    false_branch();",
+            "}"
+        ]
+    },
+    "obfuscated": {
+        "code": [
+            "int state = (condition) ? {true_state} : {false_state};",
+            "switch (state) {",
+            "    case {true_state}:",
+            "        true_branch();",
+            "        break;",
+            "    case {false_state}:",
+            "        false_branch();",
+            "        break;",
+            "}"
+        ]
+    }
+}
+
+// 模板4: 循环平坦化
+{
+    "name": "loop_flattening",
+    "original": {
+        "code": [
+            "for (int i = 0; i < n; i++) {",
+            "    body(i);",
+            "}"
+        ]
+    },
+    "obfuscated": {
+        "code": [
+            "int state = {loop_init};",
+            "int i = 0;",
+            "while (state != {loop_exit}) {",
+            "    switch (state) {",
+            "        case {loop_init}:",
+            "            if (i < n) {",
+            "                state = {loop_body};",
+            "            } else {",
+            "                state = {loop_exit};",
+            "            }",
+            "            break;",
+            "        case {loop_body}:",
+            "            body(i);",
+            "            i++;",
+            "            state = {loop_init};",
+            "            break;",
+            "    }",
+            "}"
+        ]
+    }
+}
+
+// 模板5: 多层嵌套平坦化
+{
+    "name": "nested_flattening",
+    "description": "处理嵌套的if和循环结构",
+    "complexity": "high",
+    "original": {
+        "code": [
+            "if (cond1) {",
+            "    if (cond2) {",
+            "        action1();",
+            "    } else {",
+            "        action2();",
+            "    }",
+            "} else {",
+            "    action3();",
+            "}"
+        ]
+    },
+    "obfuscated": {
+        "code": [
+            "int state = (cond1) ? {state_cond2} : {state_action3};",
+            "while (state != {state_end}) {",
+            "    switch (state) {",
+            "        case {state_cond2}:",
+            "            state = (cond2) ? {state_action1} : {state_action2};",
+            "            break;",
+            "        case {state_action1}:",
+            "            action1();",
+            "            state = {state_end};",
+            "            break;",
+            "        case {state_action2}:",
+            "            action2();",
+            "            state = {state_end};",
+            "            break;",
+            "        case {state_action3}:",
+            "            action3();",
+            "            state = {state_end};",
+            "            break;",
+            "    }",
+            "}"
+        ]
+    }
+}
+
+// 模板6: 状态值混淆
+{
+    "name": "obfuscated_state_values",
+    "description": "使用加密或复杂计算的状态值",
+    "variants": [
+        {
+            "method": "xor_encryption",
+            "code": [
+                "int state = {encrypted_start} ^ {key};",
+                "while (state != ({encrypted_end} ^ {key})) {",
+                "    switch (state ^ {key}) {",
+                "        case {plain_state1}:",
+                "            code1();",
+                "            state = {encrypted_state2};",
+                "            break;",
+                "    }",
+                "}"
+            ]
+        },
+        {
+            "method": "arithmetic_obfuscation",
+            "code": [
+                "int state = ({base} * {multiplier} + {offset});",
+                "// 状态转换使用复杂算术"
+            ]
+        }
+    ]
+}
+
+// 模板7: 完整函数平坦化示例
+{
+    "name": "full_function_example",
+    "original": {
+        "function": [
+            "int compute(int x) {",
+            "    int result = 0;",
+            "    if (x > 0) {",
+            "        result = x * 2;",
+            "    } else {",
+            "        result = -x;",
+            "    }",
+            "    return result;",
+            "}"
+        ]
+    },
+    "obfuscated": {
+        "function": [
+            "int compute(int x) {",
+            "    int result = 0;",
+            "    int state = (x > 0) ? 0x4A1 : 0x4A2;",
+            "    while (state != 0x4A3) {",
+            "        switch (state) {",
+            "            case 0x4A1:  // positive branch",
+            "                result = x * 2;",
+            "                state = 0x4A3;",
+            "                break;",
+            "            case 0x4A2:  // negative branch",
+            "                result = -x;",
+            "                state = 0x4A3;",
+            "                break;",
+            "            case 0x9F5:  // fake state",
+            "                result = x + 999;",
+            "                state = 0x4A1;",
+            "                break;",
+            "        }",
+            "    }",
+            "    return result;",
+            "}"
+        ]
+    }
+}
+
+// 配置参数
+{
+    "config": {
+        "min_states": 3,
+        "max_states": 20,
+        "fake_state_ratio": 0.3,
+        "state_value_range": {"min": 0x100, "max": 0xFFF},
+        "use_encryption": false,
+        "encryption_key_range": {"min": 0x1, "max": 0xFF}
+    }
+}

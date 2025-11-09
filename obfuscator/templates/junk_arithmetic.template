@@ -1,0 +1,153 @@
+// 垃圾算术指令模板
+// 这些指令对程序状态无实际影响，但会干扰反汇编分析
+
+// 模板1: 自相消的算术操作
+{
+    "name": "self_canceling_arithmetic",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "add rax, {random_value}",
+                "sub rax, {random_value}"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "xor ecx, ecx",
+                "add ecx, {random_value}",
+                "sub ecx, {random_value}"
+            ]
+        },
+        {
+            "arch": "x86",
+            "asm": [
+                "add eax, {random_value}",
+                "sub eax, {random_value}"
+            ]
+        },
+        {
+            "arch": "arm64",
+            "asm": [
+                "add x0, x0, #{random_value}",
+                "sub x0, x0, #{random_value}"
+            ]
+        }
+    ]
+}
+
+// 模板2: 无意义的乘除操作
+{
+    "name": "meaningless_mul_div",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "push rax",
+                "mov rax, 1",
+                "imul rax, 1",
+                "pop rax"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "push rdx",
+                "mov rdx, {random_value}",
+                "imul rdx, 0",
+                "pop rdx"
+            ]
+        }
+    ]
+}
+
+// 模板3: 寄存器交换后再交换回来
+{
+    "name": "register_swap",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "xchg rax, rbx",
+                "xchg rax, rbx"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "push rax",
+                "push rbx",
+                "pop rax",
+                "pop rbx"
+            ]
+        }
+    ]
+}
+
+// 模板4: 位运算自相消
+{
+    "name": "bitwise_canceling",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "xor rax, {random_value}",
+                "xor rax, {random_value}"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "not rax",
+                "not rax"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "neg rcx",
+                "neg rcx"
+            ]
+        }
+    ]
+}
+
+// 模板5: 移位操作自相消
+{
+    "name": "shift_canceling",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "shl rax, {shift_count}",
+                "shr rax, {shift_count}"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "asm": [
+                "rol rdx, {shift_count}",
+                "ror rdx, {shift_count}"
+            ]
+        }
+    ]
+}
+
+// 模板6: 复杂的无意义计算
+{
+    "name": "complex_useless",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "asm": [
+                "push rax",
+                "mov rax, {value1}",
+                "add rax, {value2}",
+                "sub rax, {value2}",
+                "xor rax, rax",
+                "pop rax"
+            ]
+        }
+    ]
+}

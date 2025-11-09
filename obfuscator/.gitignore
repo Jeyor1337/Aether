@@ -1,0 +1,57 @@
+# Build directories
+build/
+build-*/
+cmake-build-*/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Compiled binaries
+obfuscator-cli
+*.exe
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+Makefile
+
+# Test outputs
+tests/output/
+*.test
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+venv/
+*.egg-info/
+
+# Documentation build
+docs/_build/
+docs/.doctrees/
+
+# Temporary files
+*.tmp
+*.bak
+.*.swp
+
+# Coverage reports
+*.gcov
+*.gcda
+*.gcno
+coverage/

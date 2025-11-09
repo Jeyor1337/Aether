@@ -1,0 +1,196 @@
+// 不透明谓词模板
+// 这些是始终为真或始终为假的条件，但静态分析难以确定
+
+// 模板1: 基于数学恒等式（永真）
+{
+    "name": "math_always_true",
+    "condition": true,
+    "variants": [
+        {
+            "lang": "c",
+            "code": "((x * x) >= 0)",
+            "description": "平方数非负"
+        },
+        {
+            "lang": "c",
+            "code": "((x | 0) == x)",
+            "description": "与0按位或等于自身"
+        },
+        {
+            "lang": "c",
+            "code": "((x & x) == x)",
+            "description": "与自身按位与等于自身"
+        },
+        {
+            "lang": "c",
+            "code": "((x ^ x) == 0)",
+            "description": "异或自身等于0"
+        },
+        {
+            "lang": "c",
+            "code": "((2 * x) % 2 == 0)",
+            "description": "偶数判断"
+        }
+    ]
+}
+
+// 模板2: 基于数学恒等式（永假）
+{
+    "name": "math_always_false",
+    "condition": false,
+    "variants": [
+        {
+            "lang": "c",
+            "code": "((x * x) < 0)",
+            "description": "平方数为负"
+        },
+        {
+            "lang": "c",
+            "code": "((x & 0) != 0)",
+            "description": "与0按位与不等于0"
+        },
+        {
+            "lang": "c",
+            "code": "((x ^ x) != 0)",
+            "description": "异或自身不等于0"
+        }
+    ]
+}
+
+// 模板3: 基于指针别名（永真）
+{
+    "name": "pointer_always_true",
+    "condition": true,
+    "variants": [
+        {
+            "lang": "c",
+            "code": "(&x == &x)",
+            "description": "变量地址等于自身"
+        },
+        {
+            "lang": "c",
+            "code": "((void*)1 != (void*)0)",
+            "description": "不同指针值"
+        }
+    ]
+}
+
+// 模板4: 复杂算术表达式（永真）
+{
+    "name": "complex_always_true",
+    "condition": true,
+    "variants": [
+        {
+            "lang": "c",
+            "code": "(((x + 1) > x) || (x == INT_MAX))",
+            "description": "考虑溢出的递增"
+        },
+        {
+            "lang": "c",
+            "code": "((x % 2 == 0) || (x % 2 == 1))",
+            "description": "奇偶性覆盖所有整数"
+        },
+        {
+            "lang": "c",
+            "code": "(((x & 1) == 0) || ((x & 1) == 1))",
+            "description": "位测试覆盖所有情况"
+        }
+    ]
+}
+
+// 模板5: 基于时间/环境的伪随机（通常为真）
+{
+    "name": "environment_based",
+    "condition": true,
+    "complexity": "high",
+    "variants": [
+        {
+            "lang": "c",
+            "code": "((time(NULL) & 0xFFFFFFFF) != 0xFFFFFFFF)",
+            "description": "时间戳极少为全1"
+        },
+        {
+            "lang": "c",
+            "code": "((rand() | 1) != 0)",
+            "description": "随机数按位或1必不为0"
+        }
+    ]
+}
+
+// 模板6: 字符串/数组相关（永真）
+{
+    "name": "string_array_based",
+    "condition": true,
+    "variants": [
+        {
+            "lang": "c",
+            "code": "(sizeof(int) > 0)",
+            "description": "类型大小必然大于0"
+        },
+        {
+            "lang": "c",
+            "code": "(sizeof(char) == 1)",
+            "description": "char大小定义为1"
+        }
+    ]
+}
+
+// 模板7: 位操作复杂谓词（永真）
+{
+    "name": "bitwise_complex",
+    "condition": true,
+    "complexity": "medium",
+    "variants": [
+        {
+            "lang": "c",
+            "code": "((x | ~x) == -1)",
+            "description": "按位或其补码等于全1"
+        },
+        {
+            "lang": "c",
+            "code": "((x & ~x) == 0)",
+            "description": "按位与其补码等于0"
+        },
+        {
+            "lang": "c",
+            "code": "(((x << 1) >> 1) == (x & 0x7FFFFFFF))",
+            "description": "移位操作性质（假设32位）"
+        }
+    ]
+}
+
+// 模板8: 汇编级不透明谓词
+{
+    "name": "assembly_opaque",
+    "variants": [
+        {
+            "arch": "x86_64",
+            "condition": true,
+            "asm": [
+                "xor eax, eax",      // eax = 0
+                "test eax, eax",     // test if 0
+                "jz label",          // always jump
+                ".byte 0xE8, 0x00, 0x00, 0x00, 0x00",  // fake call (garbage)
+                "label:"
+            ]
+        },
+        {
+            "arch": "x86_64",
+            "condition": true,
+            "asm": [
+                "cmp rax, rax",      // compare with self
+                "je label",          // always equal
+                ".byte 0xFF, 0xFF",  // garbage bytes
+                "label:"
+            ]
+        }
+    ]
+}
+
+// 使用示例（代码生成时）
+{
+    "usage_example": {
+        "c_code": "if (OPAQUE_TRUE) { real_code(); } else { junk_code(); }",
+        "result": "真实代码始终执行，但静态分析会认为有两个分支"
+    }
+}

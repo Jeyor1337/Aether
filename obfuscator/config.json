@@ -1,0 +1,64 @@
+{
+  "version": "1.0.0",
+  "obfuscation_level": 2,
+  "strategies": {
+    "junk_instructions": true,
+    "control_flow_flattening": true,
+    "opaque_predicates": true,
+    "virtual_machine": false,
+    "string_encryption": true,
+    "symbol_obfuscation": true,
+    "constant_substitution": true
+  },
+  "targets": {
+    "functions": [],
+    "exclude": ["main", "debug_*", "test_*", "print_*"],
+    "include_all": true
+  },
+  "junk_instruction_config": {
+    "density": 0.3,
+    "max_per_block": 5,
+    "types": ["arithmetic", "stack_ops", "register_shuffle", "nop_variants"]
+  },
+  "control_flow_config": {
+    "enable_flattening": true,
+    "flatten_depth": 2,
+    "add_fake_branches": true,
+    "fake_branch_probability": 0.2
+  },
+  "opaque_predicate_config": {
+    "complexity": "medium",
+    "use_mathematical": true,
+    "use_pointer_aliasing": false
+  },
+  "string_encryption_config": {
+    "algorithm": "xor",
+    "key_generation": "random",
+    "encrypt_all": false,
+    "min_length": 4
+  },
+  "performance": {
+    "max_code_size_increase": 30,
+    "allow_runtime_overhead": 15,
+    "optimization_level": 2
+  },
+  "anti_analysis": {
+    "anti_debug": true,
+    "anti_vm": false,
+    "integrity_check": true,
+    "environment_detection": false,
+    "timing_checks": false
+  },
+  "output": {
+    "preserve_debug_info": false,
+    "strip_symbols": true,
+    "format": "elf",
+    "verbose": true
+  },
+  "random_seed": null,
+  "comments": {
+    "obfuscation_level": "1=Light(10-15%), 2=Medium(20-30%), 3=Heavy(30-50%), 4=Extreme(>50%)",
+    "density": "Ratio of junk instructions to original instructions (0.0-1.0)",
+    "random_seed": "Set to integer for reproducible obfuscation, null for random"
+  }
+}

@@ -1,0 +1,232 @@
+// 字符串加密模板
+// 将明文字符串加密，运行时解密
+
+// 模板1: XOR加密（单字节密钥）
+{
+    "name": "xor_single_byte",
+    "description": "使用单字节密钥异或加密",
+    "encryption": {
+        "algorithm": "xor",
+        "key_size": 1
+    },
+    "example": {
+        "original": "const char* msg = \"Hello World\";",
+        "obfuscated": [
+            "// 加密后的字符串 (密钥: 0x5A)",
+            "static unsigned char encrypted_0[] = {0x12, 0x2F, 0x36, 0x36, 0x25, 0x0A, 0x0D, 0x25, 0x32, 0x36, 0x2E};",
+            "static char decrypted_0[12];",
+            "static int init_0 = 0;",
+            "",
+            "const char* get_string_0() {",
+            "    if (!init_0) {",
+            "        for (int i = 0; i < 11; i++) {",
+            "            decrypted_0[i] = encrypted_0[i] ^ 0x5A;",
+            "        }",
+            "        decrypted_0[11] = '\\0';",
+            "        init_0 = 1;",
+            "    }",
+            "    return decrypted_0;",
+            "}",
+            "",
+            "const char* msg = get_string_0();"
+        ]
+    }
+}
+
+// 模板2: XOR加密（多字节密钥）
+{
+    "name": "xor_multi_byte",
+    "description": "使用多字节密钥循环异或",
+    "encryption": {
+        "algorithm": "xor",
+        "key_size": "variable"
+    },
+    "example": {
+        "key": [0x5A, 0x3C, 0x9F, 0x12],
+        "code": [
+            "static unsigned char encrypted_1[] = {",
+            "    0x12, 0x51, 0xF1, 0x7E, 0x2F, 0x1D, 0x92, 0x72",
+            "};",
+            "static const unsigned char key_1[] = {0x5A, 0x3C, 0x9F, 0x12};",
+            "static char decrypted_1[9];",
+            "",
+            "void decrypt_string_1() {",
+            "    for (int i = 0; i < 8; i++) {",
+            "        decrypted_1[i] = encrypted_1[i] ^ key_1[i % 4];",
+            "    }",
+            "    decrypted_1[8] = '\\0';",
+            "}"
+        ]
+    }
+}
+
+// 模板3: 内联解密（避免函数调用）
+{
+    "name": "inline_decryption",
+    "description": "在使用点直接解密，避免单独的解密函数",
+    "example": {
+        "code": [
+            "char temp[12];",
+            "unsigned char enc[] = {0x12, 0x2F, 0x36, 0x36, 0x25, 0x0A, 0x0D, 0x25, 0x32, 0x36, 0x2E};",
+            "for (int i = 0; i < 11; i++) temp[i] = enc[i] ^ 0x5A;",
+            "temp[11] = '\\0';",
+            "printf(\"%s\", temp);"
+        ]
+    }
+}
+
+// 模板4: 基于位置的密钥
+{
+    "name": "position_based_key",
+    "description": "密钥随字符位置变化",
+    "example": {
+        "code": [
+            "static unsigned char encrypted_2[] = {0x12, 0x30, 0x38, 0x3A, 0x29};",
+            "char decrypted_2[6];",
+            "",
+            "void decrypt_string_2() {",
+            "    unsigned char base_key = 0x5A;",
+            "    for (int i = 0; i < 5; i++) {",
+            "        // 密钥随位置变化",
+            "        unsigned char key = base_key + i;",
+            "        decrypted_2[i] = encrypted_2[i] ^ key;",
+            "    }",
+            "    decrypted_2[5] = '\\0';",
+            "}"
+        ]
+    }
+}
+
+// 模板5: 简单替换加密（Caesar cipher）
+{
+    "name": "caesar_cipher",
+    "description": "字符偏移加密",
+    "example": {
+        "shift": 13,
+        "code": [
+            "static char encrypted_3[] = \"Uryyb Jbeyq\";  // ROT13",
+            "static char decrypted_3[12];",
+            "",
+            "void decrypt_string_3() {",
+            "    for (int i = 0; encrypted_3[i]; i++) {",
+            "        char c = encrypted_3[i];",
+            "        if (c >= 'A' && c <= 'Z') {",
+            "            decrypted_3[i] = ((c - 'A' + 13) % 26) + 'A';",
+            "        } else if (c >= 'a' && c <= 'z') {",
+            "            decrypted_3[i] = ((c - 'a' + 13) % 26) + 'a';",
+            "        } else {",
+            "            decrypted_3[i] = c;",
+            "        }",
+            "    }",
+            "}"
+        ]
+    }
+}
+
+// 模板6: 加法/减法加密
+{
+    "name": "add_sub_cipher",
+    "description": "使用加减法混淆字符",
+    "example": {
+        "code": [
+            "static unsigned char encrypted_4[] = {",
+            "    0x5D, 0x71, 0x74, 0x74, 0x73, 0x3F, 0x61, 0x73, 0x76, 0x74, 0x72",
+            "};",
+            "static char decrypted_4[12];",
+            "",
+            "void decrypt_string_4() {",
+            "    unsigned char key = 21;",
+            "    for (int i = 0; i < 11; i++) {",
+            "        decrypted_4[i] = (char)(encrypted_4[i] - key);",
+            "    }",
+            "    decrypted_4[11] = '\\0';",
+            "}"
+        ]
+    }
+}
+
+// 模板7: 栈上字符串构建
+{
+    "name": "stack_string_build",
+    "description": "在栈上逐字符构建字符串",
+    "example": {
+        "code": [
+            "char str[12];",
+            "str[0] = 0x48; str[1] = 0x65; str[2] = 0x6C; str[3] = 0x6C;",
+            "str[4] = 0x6F; str[5] = 0x20; str[6] = 0x57; str[7] = 0x6F;",
+            "str[8] = 0x72; str[9] = 0x6C; str[10] = 0x64; str[11] = 0;",
+            "printf(\"%s\", str);"
+        ]
+    }
+}
+
+// 模板8: 结合不透明谓词的解密
+{
+    "name": "opaque_predicate_decrypt",
+    "description": "在不透明谓词保护下解密",
+    "example": {
+        "code": [
+            "char* decrypt_string_5() {",
+            "    static char result[12];",
+            "    static unsigned char enc[] = {0x12, 0x2F, 0x36, 0x36, 0x25, 0x0A, 0x0D, 0x25, 0x32, 0x36, 0x2E};",
+            "    ",
+            "    int x = 5;",
+            "    if ((x * x) >= 0) {  // 永真谓词",
+            "        for (int i = 0; i < 11; i++) {",
+            "            result[i] = enc[i] ^ 0x5A;",
+            "        }",
+            "        result[11] = '\\0';",
+            "    } else {",
+            "        // 永不执行的假解密",
+            "        for (int i = 0; i < 11; i++) {",
+            "            result[i] = enc[i] ^ 0xFF;",
+            "        }",
+            "    }",
+            "    return result;",
+            "}"
+        ]
+    }
+}
+
+// 模板9: 分块加密
+{
+    "name": "chunked_encryption",
+    "description": "将字符串分块，使用不同密钥",
+    "example": {
+        "code": [
+            "// 将 \"Hello World\" 分为 \"Hello\" 和 \" World\"",
+            "static unsigned char chunk1[] = {0x12, 0x2F, 0x36, 0x36, 0x25};  // key: 0x5A",
+            "static unsigned char chunk2[] = {0x7D, 0x3D, 0x25, 0x2D, 0x36, 0x34};  // key: 0x5D",
+            "static char result[12];",
+            "",
+            "void decrypt_chunked() {",
+            "    for (int i = 0; i < 5; i++) result[i] = chunk1[i] ^ 0x5A;",
+            "    for (int i = 0; i < 6; i++) result[5+i] = chunk2[i] ^ 0x5D;",
+            "    result[11] = '\\0';",
+            "}"
+        ]
+    }
+}
+
+// 配置选项
+{
+    "config": {
+        "min_string_length": 4,
+        "preferred_algorithm": "xor_multi_byte",
+        "key_generation": "random",
+        "inline_short_strings": true,
+        "short_string_threshold": 8,
+        "use_opaque_predicates": true,
+        "stack_strings_for_short": true
+    }
+}
+
+// 使用建议
+{
+    "usage_notes": [
+        "短字符串(<8字符)建议使用栈构建或内联解密",
+        "长字符串使用多字节XOR或分块加密",
+        "关键字符串（密码、密钥）使用更复杂的加密",
+        "非敏感字符串可以只混淆不加密（节省性能）"
+    ]
+}
